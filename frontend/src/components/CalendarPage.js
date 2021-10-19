@@ -1,4 +1,5 @@
 import React from "react";
+import { Row, Col, Container } from "react-bootstrap";
 import Calendar from "./Calendar";
 
 const mockEvents = [
@@ -17,10 +18,14 @@ const mockEvents = [
 const CalendarPage = () => {
   return (
     <>
-      <h1 data-testid="calendar-title">Calendar</h1>
-      <div className="calendar-container">
-        <Calendar events={mockEvents} />
-      </div>
+      <Container>
+        <Row>
+          <h1 data-testid="calendar-title">Calendar</h1>
+          <div className="calendar-container">
+            <Calendar events={mockEvents} />
+          </div>
+        </Row>
+      </Container>
     </>
   );
 };
