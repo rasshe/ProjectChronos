@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Carousel,
   Card,
@@ -5,13 +6,32 @@ import {
   Row,
   Button,
   Container,
-  CardGroup,
   Form,
 } from "react-bootstrap";
+import axiosInstance from "../axios"
+import { useHistory } from 'react-router-dom';
 
-import { Link } from "react-router-dom";
 
 const FrontPage = () => {
+  const history = useHistory()
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    axiosInstance
+			.post(`token/`, {
+				username: username,
+        password: password,
+			},)
+      .then((res) => {
+				localStorage.setItem('access_token', res.data.access);
+				localStorage.setItem('refresh_token', res.data.refresh);
+				axiosInstance.defaults.headers['Authorization'] =
+					'JWT ' + localStorage.getItem('access_token');
+				history.push('/input-form');
+			});
+  };
+  
   return (
     <Container className="rounded bg-light p-5">
       <Row>
@@ -80,17 +100,36 @@ const FrontPage = () => {
         <Col>
           <h2> See something interesting? </h2>
           <p class="text-muted"> Go ahead and log in to our awesome service</p>
-          <Form method="POST" action="http://127.0.0.1:8000/login/">
-          <input type="hidden" name="csrfmiddlewaretoken" value="wEEtqlkXd1duytu6uGzgRRCf1BuiiKyq1a89b1LTvSFfkF6V4eUu4JWKGTZg2jPP"/>
-           <p><label for="id_username">Username:</label> <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username"/></p>
-          <p><label for="id_password">Password:</label> <input type="password" name="password" autocomplete="current-password" required="" id="id_password"/></p>
-            <Button type="submit">Log In</Button>
+          <Form>
+            <p>
+              <label for="id_username">Username:</label>{" "}
+              <input
+                type="text"
+                autofocus=""
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                maxLength="150"
+                id="id_username"
+              />
+            </p>
+            <p>
+              <label for="id_password">Password:</label>{" "}
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required=""
+                id="id_password"
+              />
+            </p>
+            <Button type="submit" onClick={handleLogin}>
+              Log In
+            </Button>
           </Form>
         </Col>
       </Row>
     </Container>
   );
 };
-
 
 export default FrontPage;
