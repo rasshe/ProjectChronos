@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   CardGroup,
+  Form,
 } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
@@ -79,10 +80,12 @@ const FrontPage = () => {
         <Col>
           <h2> See something interesting? </h2>
           <p class="text-muted"> Go ahead and log in to our awesome service</p>
-          <Link class="btn btn-primary" to="/input-form">
-            {" "}
-            Login{" "}
-          </Link>
+          <Form method="POST" action="http://127.0.0.1:8000/login/">
+          <input type="hidden" name="csrfmiddlewaretoken" value="wEEtqlkXd1duytu6uGzgRRCf1BuiiKyq1a89b1LTvSFfkF6V4eUu4JWKGTZg2jPP"/>
+           <p><label for="id_username">Username:</label> <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username"/></p>
+          <p><label for="id_password">Password:</label> <input type="password" name="password" autocomplete="current-password" required="" id="id_password"/></p>
+            <Button type="submit">Log In</Button>
+          </Form>
         </Col>
       </Row>
     </Container>
@@ -90,3 +93,4 @@ const FrontPage = () => {
 };
 
 
+export default FrontPage;

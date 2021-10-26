@@ -1,5 +1,6 @@
+#!/bin/bash
 #Start virtual env...
-source ../django/bin/activate
+source ../virtual1/bin/activate
 
 #Start Django and react development server
 cd frontend/
