@@ -8,30 +8,29 @@ import {
   Container,
   Form,
 } from "react-bootstrap";
-import axiosInstance from "../axios"
-import { useHistory } from 'react-router-dom';
-
+import axiosInstance from "../axios";
+import { useHistory } from "react-router-dom";
 
 const FrontPage = () => {
-  const history = useHistory()
+  const history = useHistory();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const handleLogin = (e) => {
     e.preventDefault();
     axiosInstance
-			.post(`token/`, {
-				username: username,
+      .post(`token/`, {
+        username: username,
         password: password,
-			},)
+      })
       .then((res) => {
-				localStorage.setItem('access_token', res.data.access);
-				localStorage.setItem('refresh_token', res.data.refresh);
-				axiosInstance.defaults.headers['Authorization'] =
-					'JWT ' + localStorage.getItem('access_token');
-				history.push('/input-form');
-			});
+        localStorage.setItem("access_token", res.data.access);
+        localStorage.setItem("refresh_token", res.data.refresh);
+        axiosInstance.defaults.headers["Authorization"] =
+          "JWT " + localStorage.getItem("access_token");
+        history.push("/input-form");
+      });
   };
-  
+
   return (
     <Container className="rounded bg-light p-5">
       <Row>

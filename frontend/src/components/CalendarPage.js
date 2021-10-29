@@ -1,6 +1,8 @@
 import React from "react";
-import { Row, Col, Container } from "react-bootstrap";
+import { useEffect } from "react";
+import { Row, Container } from "react-bootstrap";
 import Calendar from "./Calendar";
+import axiosInstance from "../axios";
 
 const mockEvents = [
   {
@@ -16,6 +18,9 @@ const mockEvents = [
 ];
 
 const CalendarPage = () => {
+  useEffect(() => {
+    axiosInstance.get("calendar/").then((r) => console.log(r.data));
+  }, []);
   return (
     <>
       <Container>

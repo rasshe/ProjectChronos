@@ -8,7 +8,7 @@ const FormPage = () => {
   const handleSubmit = (e) => {
     setListHidden(false);
     e.preventDefault();
-    axiosInstance.get("form/").then(r=>console.log(r))
+    axiosInstance.post("form/").then((r) => console.log(r.data));
   };
   return (
     <>
