@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import CalendarPage from "./components/CalendarPage";
@@ -8,7 +8,7 @@ import FrontPage from "./components/FrontPage";
 import PublicEventsPage from "./components/PublicEventsPage";
 import FormPage from "./components/FormPage";
 
-import { Button, Row, Col, Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container } from "react-bootstrap";
 
 function App() {
   return (

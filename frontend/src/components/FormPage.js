@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Form, Row, Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import axiosInstance from "../axios";
+
 const FormPage = () => {
   const [listHidden, setListHidden] = useState(true);
-
   const handleSubmit = (e) => {
     setListHidden(false);
     e.preventDefault();
+    axiosInstance.post("form/").then((r) => console.log(r.data));
   };
-
   return (
     <>
       <Container>
@@ -19,12 +20,11 @@ const FormPage = () => {
             <Form.Label>Enter File</Form.Label>
             <Form.Control type="file"></Form.Control>
           </Form.Group>
-
           <Button
             as={Row}
-            onClick={handleSubmit}
             variant="success"
             type="submit"
+            onClick={handleSubmit}
           >
             {" "}
             Check{" "}
