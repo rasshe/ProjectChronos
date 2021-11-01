@@ -15,7 +15,7 @@ class Study_events(Events):
     attendees = models.ManyToManyField(User)
 
 class Deadlines(Events):
-    time = models.DateTimeField
+    time = models.DateTimeField()
     total_allocated_time = models.IntegerField()
     completed_time = models.BooleanField(default= False)
     
