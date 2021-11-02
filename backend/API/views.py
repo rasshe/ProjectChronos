@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Calendar, Deadlines
+from .models import Calendar, Deadlines, Study_events
 from .serializers import EventSerializer
 import icalendar
 import json
@@ -62,3 +62,10 @@ def DeadlineView(request):
         calendar.events.add(deadline_object)
     calendar.save()
     return HttpResponse("GOOD")
+
+@api_view(['GET'])
+def PublicEventView(request):
+    public_events = Study_events.objects.filter(is_public=True)
+    data = serializers.serialize("json", public_events)
+    return HttpResponse(data)
+
