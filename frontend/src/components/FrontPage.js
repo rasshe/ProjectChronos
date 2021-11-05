@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Carousel,
   Card,
@@ -28,8 +28,15 @@ const FrontPage = () => {
         axiosInstance.defaults.headers["Authorization"] =
           "JWT " + localStorage.getItem("access_token");
         history.push("/input-form");
+        window.location.reload(false);
       });
   };
+
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      history.push("/events")
+    }
+  }, [])
 
   return (
     <Container className="rounded bg-light p-5">

@@ -63,6 +63,10 @@ def DeadlineView(request):
     calendar.save()
     return HttpResponse("GOOD")
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def UserView(request):
+    return HttpResponse(request.user.username)
 
 def create_events(deadline, allocation, day, time, hours_left_day, now, user, calendar, suffix=0):
     if allocation <= hours_left_day:
@@ -127,3 +131,4 @@ def simple_schedule(deadlines, user, calendar):
                 suffix="({})".format(iteration))
             iteration += 1
             hours_allocated += used_time
+
