@@ -8,7 +8,7 @@ from .serializers import EventSerializer
 import icalendar
 import json
 from datetime import datetime
-
+from rest_framework.response import Response
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -69,3 +69,37 @@ def PublicEventView(request):
     data = serializers.serialize("json", public_events)
     return HttpResponse(data)
 
+'''
+@api_view(['GET'])
+def user_data(request):
+    serializer = User_serializer(request.user)
+    return Response(serializer)
+'''
+from django.contrib.auth.forms import UserCreationForm
+
+
+
+
+
+@api_view(['POST','GET'])
+def RegisterView(request):
+    
+    print(UserCreationForm())
+    print('--'*10)
+    print('--'*10)
+
+    if request.method == 'POST':
+        
+        user_create_form = UserCreationForm(data=request.data)
+
+        if user_create_form.is_valid():
+            a= user_create_form.save()
+            print("new user", a)
+            return Response("Got it!")
+        else:
+            return Response("NOGO")
+        
+    elif request.method == "GET":
+        
+        return Response(UserCreationForm().as_p())
+        

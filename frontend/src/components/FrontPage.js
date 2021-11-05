@@ -11,10 +11,20 @@ import {
 import axiosInstance from "../axios";
 import { useHistory } from "react-router-dom";
 
+
+
 const FrontPage = () => {
   const history = useHistory();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
+
+
+  const [RegisterUser , setRegisterUser] = useState(false);
+  
+  const [username1, setUsername1] = useState();
+  const [password1, setPassword1] = useState();
+  const [password2, setPassword2] = useState();
+
   const handleLogin = (e) => {
     e.preventDefault();
     axiosInstance
@@ -30,7 +40,23 @@ const FrontPage = () => {
         history.push("/input-form");
       });
   };
+  const handleRegister = (e) => {
+    e.preventDefault();
+    axiosInstance
+      .post(`register/`, {
+        'username': username1,
+        'password1': password1,
+        'password2': password2,
+      })
 
+  };
+
+
+  const handleRegViewChange = (e) =>{
+
+
+    setRegisterUser( !RegisterUser );
+  }
   return (
     <Container className="rounded bg-light p-5">
       <Row>
@@ -99,6 +125,10 @@ const FrontPage = () => {
         <Col>
           <h2> See something interesting? </h2>
           <p class="text-muted"> Go ahead and log in to our awesome service</p>
+          
+          
+          
+          { RegisterUser ?
           <Form>
             <p>
               <label for="id_username">Username:</label>{" "}
@@ -125,6 +155,51 @@ const FrontPage = () => {
               Log In
             </Button>
           </Form>
+
+
+            :
+
+        
+          <Form>
+            <p>
+              <label for="id_username">Username:</label>{" "}
+              <input
+                type="text"
+                autofocus=""
+                value={username1}
+                onChange={(e) => setUsername1(e.target.value)}
+                maxLength="150"
+                id="id_username"
+              />
+            </p>
+            <p>
+              <label for="id_password1">Password:</label>{" "}
+              <input
+                type="password"
+                value={password1}
+                onChange={(e) => setPassword1(e.target.value)}
+                required=""
+                id="id_password1"
+              />
+
+              <label for="id_password2">Password:</label>{" "}
+              <input
+                type="password"
+                value={password2}
+                onChange={(e) => setPassword2(e.target.value)}
+                required=""
+                id="id_password2"
+              />
+            </p>
+            <Button type="submit" onClick={handleRegister}>
+              Register
+            </Button>
+          </Form>
+}
+        </Col>
+        <Col>
+        <h3> No account? No worries.</h3>
+        <Button onClick={handleRegViewChange}>Create </Button>
         </Col>
       </Row>
     </Container>
