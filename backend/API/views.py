@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
+from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import Calendar, Deadlines, Study_events
@@ -96,7 +97,7 @@ def create_events(deadline, allocation, day, time, hours_left_day, now, user, ca
         return (allocation - hours_left_day, hours_left_day)
 
 def simple_schedule(deadlines, user, calendar):
-    now = datetime.now()
+    now = timezone.now()
     start_weekday = 1
     if now.weekday() + 1 >= 5:
         start_weekday = 7 - now.weekday() + 1
@@ -114,7 +115,6 @@ def simple_schedule(deadlines, user, calendar):
                 hours_allocated+=2*hours_per_day
                 day = math.ceil(hours_allocated / hours_per_day) + start_weekday
             done_this_day = hours_allocated % hours_per_day
-            print("DAY: ", day, "TIME: ", start_time + done_this_day, "LEFT: ", hours_per_day - done_this_day)
             left_of_allocation, used_time = create_events(
                 deadline, 
                 left_of_allocation,
