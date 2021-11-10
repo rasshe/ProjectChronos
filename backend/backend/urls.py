@@ -37,4 +37,5 @@ urlpatterns = [
 
     path('api/view_event_detail/<int:id>',event_detail),
     path('api/custom_event/',custom_event),
+    path('api/user/', UserView)
 ]

@@ -107,6 +107,9 @@ def RegisterView(request):
         
         return Response(UserCreationForm().as_p())
         
+@permission_classes([IsAuthenticated])
+def UserView(request):
+    return HttpResponse(request.user.username)
 
 def create_events(deadline, allocation, day, time, hours_left_day, now, user, calendar, suffix=0):
     if allocation <= hours_left_day:
