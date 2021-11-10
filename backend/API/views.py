@@ -8,14 +8,12 @@ from .models import Calendar, Deadlines, Study_events
 from .serializers import EventSerializer
 import icalendar
 import json
-<<<<<<< HEAD
 from datetime import datetime
 from rest_framework.response import Response
-=======
 from datetime import datetime, timedelta
 import math
-
->>>>>>> origin/master
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, get_object_or_404, Http404
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -68,7 +66,6 @@ def DeadlineView(request):
     calendar.save()
     return HttpResponse("GOOD")
 
-<<<<<<< HEAD
 @api_view(['GET'])
 def PublicEventView(request):
     public_events = Study_events.objects.filter(is_public=True)
@@ -81,7 +78,6 @@ def user_data(request):
     serializer = User_serializer(request.user)
     return Response(serializer)
 '''
-from django.contrib.auth.forms import UserCreationForm
 
 
 
@@ -103,13 +99,14 @@ def RegisterView(request):
             print("new user", a)
             return Response("Got it!")
         else:
+            print(user_create_form.errors)
+            print("NOGO")
             return Response("NOGO")
         
     elif request.method == "GET":
         
         return Response(UserCreationForm().as_p())
         
-=======
 
 def create_events(deadline, allocation, day, time, hours_left_day, now, user, calendar, suffix=0):
     if allocation <= hours_left_day:
@@ -174,4 +171,109 @@ def simple_schedule(deadlines, user, calendar):
                 suffix="({})".format(iteration))
             iteration += 1
             hours_allocated += used_time
->>>>>>> origin/master
+
+@api_view(['POST'])
+def custom_event(request):
+    """ Create Custom event
+
+    Args:
+        request ([type]): [description]
+
+    Raises:
+        Http404: Error code Http 404
+    """
+    
+    #if request.user.is_authenticated() and request.method == "POST":
+
+    if request.method == "POST":
+        serializer = EventSerializer(data=request.data)
+        if serializer.is_valid():
+            a = serializer.save(user_id=request.user)
+            print("am i saved? ", a)
+            try:
+                calendar_obj= Calendar.objects.get(user_id= request.user)
+                
+                #These events can be anything. 
+                calendar_obj.studyevents.add(a)
+            except:
+                #create one? 
+                return Response("ERROR: USER HAS NO CALENDAR -- bypass")
+            return Response("OK")
+        else:
+            return Response("NO")
+    else:
+        raise Http404()
+@api_view(['POST', 'GET'])
+def event_detail(request,id):
+    """ Modify and view event details
+
+
+        Example: 
+        POST:
+            passing {"is_public": true}
+            changes existing event to public
+        GET:
+            Gets event details
+
+        TODO:
+        POST: DEADLINES
+
+    Args:
+        request ([type]): [description]
+
+    Raises:
+        Http404: [description]
+    """
+    #event_obj = get_list_or_404(Event,id = id, owner_id=request.user)
+    
+
+    if request.method == "POST":
+        
+        #event_obj = get_list_or_404(Study_events,id = id, owner_id=request.user)
+        
+        event_obj = get_object_or_404(Study_events,id = id)
+        
+        #Modify event that user owns
+        if Study_events.objects.filter(id= event_obj.id).exists(): 
+            serializer = EventSerializer(event_obj,data=request.data,partial=True)
+            if serializer.is_valid():
+                a = serializer.save()
+                
+                #return Response("Was valid"+str(serializer.data))
+                return Response("OK")
+            else:
+                return Response("NO")
+                #return Response("NO-GO:"+str(serializer.errors))
+        else:
+            ## Can user change deadlines (?)
+            raise Http404()
+    elif request.method=="GET":
+        event_obj = get_object_or_404(Study_events,id = id)
+
+        if event_obj.is_public:
+            return Response(EventSerializer(event_obj).data)            
+        else:
+            if event_obj.owner_id == request.user:
+                return Response(EventSerializer(event_obj).data)
+            else:
+                raise Http404()
+        #return Response(EventSerializer(event_obj).data)
+    '''
+    elif request.method =="GET":
+        event_obj = get_list_or_404(Study_events,id = id, owner_id=request.user)
+        if Study_event.objects.filter(id= event_obj.id).exists():
+            serializer = EventSerializer(event_obj)
+            return Response(serializer.data)
+
+        elif Deadlines.objects.filter(id= event_obj.id).exists():
+            serializer = DeadlinesSerializer(event_obj)
+            return Response(serializer.data)
+        else:
+            raise Http404()
+    else:
+        raise Http404()
+    '''
+
+
+def get_hyped_events(request):
+    pass

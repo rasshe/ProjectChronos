@@ -33,5 +33,8 @@ urlpatterns = [
     path('api/calendar/', CalendarView),
     path('api/calendar_file/', CalendarParserView),
     path('api/deadlines/', DeadlineView),
-    path('api/public_events/', PublicEventView)
+    path('api/public_events/', PublicEventView),
+
+    path('api/view_event_detail/<int:id>',event_detail),
+    path('api/custom_event/',custom_event),
 ]
