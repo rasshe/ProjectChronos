@@ -21,6 +21,9 @@ function App() {
       setUsername(r.data)
       console.log(r.data)
     })
+    .catch((e) => {
+      console.log(e)
+    })
   }, [])
   return (
     <Router>
