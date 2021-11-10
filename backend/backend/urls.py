@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from API.views import SomeView, CalendarView, CalendarParserView, DeadlineView
+from API.views import SomeView, CalendarView, CalendarParserView, DeadlineView, UserView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -30,5 +30,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/calendar/', CalendarView),
     path('api/calendar_file/', CalendarParserView),
-    path('api/deadlines/', DeadlineView)
+    path('api/deadlines/', DeadlineView),
+    path('api/user/', UserView)
 ]

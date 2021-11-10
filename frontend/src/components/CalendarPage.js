@@ -9,11 +9,8 @@ const CalendarPage = () => {
   const [events, setEvents] = useState([])
   useEffect(() => {
     axiosInstance.get("calendar/").then((r) => {
-      console.log()
       const parsed_data = JSON.parse(r.data)
-      console.log(parsed_data)
       const formatted = parsed_data.map(event => {
-        console.log(event)
         return {
         title: event.fields.name,
         start: Date.parse(event.fields.starting_time),
