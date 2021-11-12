@@ -31,8 +31,8 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/calendar/', CalendarView,name='Calendar_events'),
-    path('api/calendar_file/', CalendarParserView),
-    path('api/deadlines/', DeadlineView),
+    path('api/calendar_file/', CalendarParserView,name="Cal_parser"),
+    path('api/deadlines/', DeadlineView,name="Calendar_deadlines"),
     path('api/public_events/', PublicEventView,name="All_public_events"),
 
     path('api/view_event_detail/<int:id>',event_detail,name="Event_detail"),
