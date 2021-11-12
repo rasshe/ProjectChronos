@@ -26,16 +26,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/',include('django.contrib.auth.urls')),
 
-    path('api/register/',RegisterView),
+    path('api/register/',RegisterView,name="user_registration"),
     path('api/form/', SomeView),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/calendar/', CalendarView),
+    path('api/calendar/', CalendarView,name='Calendar_events'),
     path('api/calendar_file/', CalendarParserView),
     path('api/deadlines/', DeadlineView),
-    path('api/public_events/', PublicEventView),
+    path('api/public_events/', PublicEventView,name="All_public_events"),
 
-    path('api/view_event_detail/<int:id>',event_detail),
-    path('api/custom_event/',custom_event),
+    path('api/view_event_detail/<int:id>',event_detail,name="Event_detail"),
+    path('api/custom_event/',custom_event,name="event_custom"),
     path('api/user/', UserView)
 ]

@@ -11,6 +11,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Study_events
         fields = "__all__"
+        read_only_fields = ['owner_id']
 
 class DeadlinesSerializer(serializers.ModelSerializer):
     class Meta:

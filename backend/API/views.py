@@ -15,6 +15,8 @@ import math
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, Http404
 
+
+from django.contrib.auth.decorators import login_required
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def SomeView(request):
@@ -26,11 +28,14 @@ def SomeView(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def CalendarView(request):
-    own_calendar = Calendar.objects.get(user_id = request.user)
-    events = own_calendar.studyevents.all()
-    serializer = serializers.serialize("json", events)
-    return JsonResponse(serializer, safe=False)
 
+    if Calendar.objects.filter(user_id = request.user).exists():
+        own_calendar = Calendar.objects.get(user_id = request.user)
+        events = own_calendar.studyevents.all()
+        serializer = serializers.serialize("json", events)
+        return JsonResponse(serializer, safe=False)
+    else:
+        return JsonResponse("", safe=False)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def CalendarParserView(request):
@@ -86,9 +91,9 @@ def user_data(request):
 @api_view(['POST','GET'])
 def RegisterView(request):
     
-    print(UserCreationForm())
-    print('--'*10)
-    print('--'*10)
+    #print(UserCreationForm())
+    #print('--'*10)
+    #print('--'*10)
 
     if request.method == 'POST':
         
@@ -96,11 +101,11 @@ def RegisterView(request):
 
         if user_create_form.is_valid():
             a= user_create_form.save()
-            print("new user", a)
+            #print("new user", a)
             return Response("Got it!")
         else:
-            print(user_create_form.errors)
-            print("NOGO")
+            #print(user_create_form.errors)
+            #print("NOGO")
             return Response("NOGO")
         
     elif request.method == "GET":
@@ -175,7 +180,9 @@ def simple_schedule(deadlines, user, calendar):
             iteration += 1
             hours_allocated += used_time
 
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def custom_event(request):
     """ Create Custom event
 
@@ -185,14 +192,18 @@ def custom_event(request):
     Raises:
         Http404: Error code Http 404
     """
-    
     #if request.user.is_authenticated() and request.method == "POST":
 
     if request.method == "POST":
+        print("posted")
+        #request.data['owner_id'] = request.user
         serializer = EventSerializer(data=request.data)
+        #serializer.owner_id = request.user
+
         if serializer.is_valid():
-            a = serializer.save(user_id=request.user)
+            a = serializer.save(owner_id= request.user)
             print("am i saved? ", a)
+        
             try:
                 calendar_obj= Calendar.objects.get(user_id= request.user)
                 
@@ -200,9 +211,12 @@ def custom_event(request):
                 calendar_obj.studyevents.add(a)
             except:
                 #create one? 
+                print()
                 return Response("ERROR: USER HAS NO CALENDAR -- bypass")
             return Response("OK")
         else:
+            print("posted")
+            print(serializer.errors)
             return Response("NO")
     else:
         raise Http404()
