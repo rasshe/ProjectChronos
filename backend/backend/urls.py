@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.conf.urls.static import static
+from django.conf import settings
 from API.views import *
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -38,4 +39,4 @@ urlpatterns = [
     path('api/view_event_detail/<int:id>',event_detail,name="Event_detail"),
     path('api/custom_event/',custom_event,name="event_custom"),
     path('api/user/', UserView)
-]
+] 
