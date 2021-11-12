@@ -114,7 +114,7 @@ def UserView(request):
 def create_events(deadline, allocation, day, time, hours_left_day, now, user, calendar, suffix=0):
     if allocation <= hours_left_day:
         start_time = now + timedelta(day)
-        start_time = start_time.replace(hour=time, minute=0)
+        start_time = start_time.replace(hour=time, minute=15)
         end_time = now + timedelta(day)
         end_time = end_time.replace(hour=time+allocation, minute=0)
         event = Study_events.objects.create(
@@ -129,7 +129,7 @@ def create_events(deadline, allocation, day, time, hours_left_day, now, user, ca
         return (0, allocation)
     else:
         start_time = now + timedelta(day)
-        start_time = start_time.replace(hour=time, minute=0)
+        start_time = start_time.replace(hour=time, minute=15)
         end_time = now + timedelta(day)
         end_time = end_time.replace(hour=time + hours_left_day, minute=0)
         event = Study_events.objects.create(
@@ -146,18 +146,18 @@ def create_events(deadline, allocation, day, time, hours_left_day, now, user, ca
 def simple_schedule(deadlines, user, calendar):
     now = timezone.now()
     start_weekday = 1
-    if now.weekday() + 1 >= 5:
+    if now.weekday() + 1 >= 5: #if its weekend:
         start_weekday = 7 - now.weekday() + 1
     start_time = 9
-    hours_per_day = 6
-    hours_allocated = 0
+    hours_per_day = 10
+    hours_allocated = 0 # this is counter!
     sorted_deadlines = sorted(deadlines, key=lambda d: d['time'])
     for deadline in sorted_deadlines:
         allocation = int(deadline["allocation"])
         left_of_allocation = allocation
         iteration = 1
         while left_of_allocation > 0:
-            day = math.ceil(hours_allocated / hours_per_day) + start_weekday
+            day = math.floor(hours_allocated / hours_per_day) + start_weekday
             if (now + timedelta(day)).weekday() >= 5:
                 hours_allocated+=2*hours_per_day
                 day = math.ceil(hours_allocated / hours_per_day) + start_weekday
@@ -239,12 +239,15 @@ def event_detail(request,id):
         #Modify event that user owns
         if Study_events.objects.filter(id= event_obj.id).exists(): 
             serializer = EventSerializer(event_obj,data=request.data,partial=True)
+            print(serializer)
             if serializer.is_valid():
                 a = serializer.save()
                 
                 #return Response("Was valid"+str(serializer.data))
                 return Response("OK")
             else:
+
+                print(serializer.errors)
                 return Response("NO")
                 #return Response("NO-GO:"+str(serializer.errors))
         else:
