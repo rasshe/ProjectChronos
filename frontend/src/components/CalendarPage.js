@@ -12,6 +12,7 @@ const CalendarPage = () => {
       const parsed_data = JSON.parse(r.data)
       const formatted = parsed_data.map(event => {
         return {
+        id: event.pk,
         title: event.fields.name,
         start: Date.parse(event.fields.starting_time),
         end: Date.parse(event.fields.end_time),
