@@ -29,12 +29,14 @@ axiosInstance.interceptors.response.use(
       );
       return Promise.reject(error);
     }
-
+    
     if (
       error.response.status === 401 &&
-      originalRequest.url === baseURL + "token/refresh/"
+      originalRequest.url ===  "/token/refresh/"
     ) {
-      window.location.href = "/login/";
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      window.location.href = "/";
       return Promise.reject(error);
     }
 
@@ -78,6 +80,8 @@ axiosInstance.interceptors.response.use(
         }
       } else {
         console.log("Refresh token not available.");
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         window.location.href = "/";
       }
     }

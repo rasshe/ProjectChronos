@@ -5,11 +5,9 @@ import { useHistory } from "react-router-dom";
 
 const FormPage = () => {
   const history = useHistory();
-  const [listHidden, setListHidden] = useState(true);
   const [newDeadlines, setNewDeadlines] = useState([]);
   const [file, setFile] = useState("");
   const handleSubmitFile = (e) => {
-    setListHidden(false);
     e.preventDefault();
     if (!file) {
       alert("No file selected");
