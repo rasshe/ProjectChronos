@@ -43,13 +43,15 @@ def CalendarParserView(request):
     calendar_file = request.FILES["file"]
     gcal = icalendar.Calendar.from_ical(calendar_file.read())
     deadlines = []
+    own_calendar = Calendar.objects.get(user_id = request.user)
+    old_deadlines = own_calendar.studyevents
     for component in gcal.walk():
         if component.name == "VEVENT":
             startdt = component.get('dtstart').dt
             enddt = component.get('dtend').dt
             summary = component.get('summary')
             description = component.get('description')
-            if startdt == enddt:
+            if (not old_deadlines.filter(description = description)) and startdt == enddt:
                 deadlines.append({"time": startdt, "summary": summary, "description": description})
     return  JsonResponse(deadlines, safe=False)
 
@@ -119,12 +121,19 @@ def RegisterView(request):
 def UserView(request):
     return HttpResponse(request.user.username)
 
+
+def time_is_not_free(calendar, start_time, end_time): 
+    return calendar.studyevents.filter(starting_time__lte = start_time, end_time__gte = start_time) | calendar.studyevents.filter(starting_time__lte = end_time, starting_time__gte = start_time)
+
+
 def create_events(deadline, allocation, day, time, hours_left_day, now, user, calendar, suffix=0):
     start_time = now + timedelta(day)
     start_time = start_time.replace(hour=time, minute=15)
     if hours_left_day == 1 or allocation == 1:
         end_time = now + timedelta(day)
         end_time = end_time.replace(hour=time+1, minute=0)
+        if time_is_not_free(calendar, start_time, end_time):
+            return(allocation, 1)
         event = Study_events.objects.create(
             starting_time = start_time,
             end_time = end_time,
@@ -138,6 +147,8 @@ def create_events(deadline, allocation, day, time, hours_left_day, now, user, ca
     else:
         end_time = now + timedelta(day)
         end_time = end_time.replace(hour=time + 2, minute=0)
+        if time_is_not_free(calendar, start_time, end_time):
+            return (allocation, 2)
         event = Study_events.objects.create(
             starting_time = start_time,
             end_time = end_time,
@@ -150,7 +161,7 @@ def create_events(deadline, allocation, day, time, hours_left_day, now, user, ca
         return (allocation - 2, 2)
 
 def simple_schedule(deadlines, user, calendar):
-    now = timezone.now()
+    now = datetime.now()
     start_weekday = 1
     if now.weekday() + 1 >= 5: #if its weekend:
         start_weekday = 7 - now.weekday()

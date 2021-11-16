@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 
 const FormPage = () => {
   const history = useHistory();
+  const [noNewEvents, setNoNewEvents] = useState(false)
   const [newDeadlines, setNewDeadlines] = useState([]);
   const [file, setFile] = useState("");
   const handleSubmitFile = (e) => {
@@ -16,8 +17,16 @@ const FormPage = () => {
     let formData = new FormData();
     formData.append("file", file);
     axiosInstance.post("calendar_file/", formData).then((r) => {
+      if (r.data.length == 0) {
+        setFile("")
+        setNoNewEvents(true)
+      }
+      else {
       console.log(r.data);
+      setFile("")
       setNewDeadlines(r.data);
+      setNoNewEvents(false)
+      }
     });
   };
   const handleTimeAllocation = (value, index) => {
@@ -61,7 +70,7 @@ const FormPage = () => {
         </Form>
 
         <br />
-
+        <h2 hidden={!noNewEvents}>There were no new deadlines in this file! Check a new file or go to calendar</h2>
         <div hidden={newDeadlines.length === 0}>
           {newDeadlines.map((dl, i) => (
             <div key={i}>

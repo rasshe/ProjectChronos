@@ -19,8 +19,8 @@ const CalendarPage = () => {
         return {
         id: event.pk,
         title: event.fields.name,
-        start: Date.parse(event.fields.starting_time),
-        end: Date.parse(event.fields.end_time),
+        start: Date.parse(event.fields.starting_time.slice(0, -1)),
+        end: Date.parse(event.fields.end_time.slice(0, -1)),
       }
       })
       setEvents(formatted)
