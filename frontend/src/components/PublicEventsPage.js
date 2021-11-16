@@ -25,8 +25,8 @@ const PublicEventsPage = () => {
   useEffect(() => {
     axiosInstance.get("public_events/").then((r) => {
       setEvents(r.data.map((e) => e.fields));
-      //console.log(r.data.map((e) => e.fields));
-    });
+      console.log(r.data.map((e) => e.fields));
+    }).catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {

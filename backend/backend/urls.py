@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.conf.urls.static import static
+from django.conf import settings
 from API.views import *
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -26,16 +27,17 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/',include('django.contrib.auth.urls')),
 
-    path('api/register/',RegisterView),
+    path('api/register/',RegisterView,name="user_registration"),
     path('api/form/', SomeView),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/calendar/', CalendarView),
-    path('api/calendar_file/', CalendarParserView),
-    path('api/deadlines/', DeadlineView),
-    path('api/public_events/', PublicEventView),
+    path('api/calendar/', CalendarView,name='Calendar_events'),
+    path('api/calendar_file/', CalendarParserView,name="Cal_parser"),
+    path('api/deadlines/', DeadlineView,name="Calendar_deadlines"),
+    path('api/public_events/', PublicEventView,name="All_public_events"),
 
-    path('api/view_event_detail/<int:id>',event_detail),
-    path('api/custom_event/',custom_event),
+    path('api/view_event_detail/<int:id>',event_detail,name="Event_detail"),
+    path('api/custom_event/',custom_event,name="event_custom"),
+    path('api/custom_event_and_move/',add_custom_event_and_move),
     path('api/user/', UserView)
-]
+] 
