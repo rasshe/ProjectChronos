@@ -43,7 +43,7 @@ def CalendarParserView(request):
     calendar_file = request.FILES["file"]
     gcal = icalendar.Calendar.from_ical(calendar_file.read())
     deadlines = []
-    own_calendar = Calendar.objects.get(user_id = request.user)
+    own_calendar = Calendar.objects.get_or_create(user_id = request.user)
     old_deadlines = own_calendar.studyevents
     for component in gcal.walk():
         if component.name == "VEVENT":
