@@ -106,11 +106,11 @@ const PublicEventsPage = () => {
         </Col>
       </Row>
       <Row>
-        <label> Search</label>
+        <label style={{fontWeight: 'bold'}}>Search</label>
+        <br/>
         <input type="text" onChange={e => setQuery(e.target.value)} />
         <CardGroup>
           {filterData.length === 0 ? <div>No result found</div> : filterData.map((val) => {
-            console.log(val)
             return <EventCard info={val}>
             </EventCard>
           })}
