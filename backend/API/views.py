@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.core import serializers
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
@@ -28,7 +28,6 @@ def SomeView(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def CalendarView(request):
-
     if Calendar.objects.filter(user_id = request.user).exists():
         own_calendar = Calendar.objects.get(user_id = request.user)
         events = own_calendar.studyevents.all()
@@ -36,19 +35,23 @@ def CalendarView(request):
         return JsonResponse(serializer, safe=False)
     else:
         return JsonResponse("", safe=False)
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def CalendarParserView(request):
     calendar_file = request.FILES["file"]
     gcal = icalendar.Calendar.from_ical(calendar_file.read())
     deadlines = []
+    own_calendar = Calendar.objects.get(user_id = request.user)
+    old_deadlines = own_calendar.studyevents
     for component in gcal.walk():
         if component.name == "VEVENT":
             startdt = component.get('dtstart').dt
             enddt = component.get('dtend').dt
             summary = component.get('summary')
             description = component.get('description')
-            if startdt == enddt:
+            if (not old_deadlines.filter(description = description)) and startdt == enddt:
                 deadlines.append({"time": startdt, "summary": summary, "description": description})
     return  JsonResponse(deadlines, safe=False)
 
@@ -112,16 +115,25 @@ def RegisterView(request):
         
         return Response(UserCreationForm().as_p())
         
+
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def UserView(request):
     return HttpResponse(request.user.username)
 
+
+def time_is_not_free(calendar, start_time, end_time): 
+    return calendar.studyevents.filter(starting_time__lte = start_time, end_time__gte = start_time) | calendar.studyevents.filter(starting_time__lte = end_time, starting_time__gte = start_time)
+
+
 def create_events(deadline, allocation, day, time, hours_left_day, now, user, calendar, suffix=0):
-    if allocation <= hours_left_day:
-        start_time = now + timedelta(day)
-        start_time = start_time.replace(hour=time, minute=15)
+    start_time = now + timedelta(day)
+    start_time = start_time.replace(hour=time, minute=15)
+    if hours_left_day == 1 or allocation == 1:
         end_time = now + timedelta(day)
-        end_time = end_time.replace(hour=time+allocation, minute=0)
+        end_time = end_time.replace(hour=time+1, minute=0)
+        if time_is_not_free(calendar, start_time, end_time):
+            return(allocation, 1)
         event = Study_events.objects.create(
             starting_time = start_time,
             end_time = end_time,
@@ -131,12 +143,12 @@ def create_events(deadline, allocation, day, time, hours_left_day, now, user, ca
             attendees = 1
         )
         calendar.studyevents.add(event)
-        return (0, allocation)
+        return (allocation - 1, 1)
     else:
-        start_time = now + timedelta(day)
-        start_time = start_time.replace(hour=time, minute=15)
         end_time = now + timedelta(day)
-        end_time = end_time.replace(hour=time + hours_left_day, minute=0)
+        end_time = end_time.replace(hour=time + 2, minute=0)
+        if time_is_not_free(calendar, start_time, end_time):
+            return (allocation, 2)
         event = Study_events.objects.create(
             starting_time = start_time,
             end_time = end_time,
@@ -146,15 +158,15 @@ def create_events(deadline, allocation, day, time, hours_left_day, now, user, ca
             attendees = 1
         )
         calendar.studyevents.add(event)
-        return (allocation - hours_left_day, hours_left_day)
+        return (allocation - 2, 2)
 
 def simple_schedule(deadlines, user, calendar):
-    now = timezone.now()
+    now = datetime.now()
     start_weekday = 1
     if now.weekday() + 1 >= 5: #if its weekend:
-        start_weekday = 7 - now.weekday() + 1
+        start_weekday = 7 - now.weekday()
     start_time = 9
-    hours_per_day = 10
+    hours_per_day = 6
     hours_allocated = 0 # this is counter!
     sorted_deadlines = sorted(deadlines, key=lambda d: d['time'])
     for deadline in sorted_deadlines:
@@ -183,6 +195,36 @@ def simple_schedule(deadlines, user, calendar):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def add_custom_event_and_move(request):
+    serializer = EventSerializer(data=request.data, partial=True)
+    if serializer.is_valid():
+        new_event_start_time = serializer.validated_data.get('starting_time')
+        new_event_end_time = serializer.validated_data.get('end_time')
+        calendar = Calendar.objects.get(user_id= request.user)
+        move_events_down(calendar, new_event_start_time, new_event_end_time)
+        a = serializer.save(owner_id=request.user)
+        calendar.studyevents.add(a)
+        return HttpResponse("OK")
+    return HttpResponseBadRequest()
+    
+
+def move_events_down(calendar, new_event_start, new_event_end):
+    affected_events = Study_events.objects.filter(is_public=True)
+    events = calendar.studyevents.filter(
+                                        starting_time__year = new_event_start.year, 
+                                        starting_time__month = new_event_start.month, 
+                                        starting_time__day=new_event_start.day, 
+                                        end_time__gt=new_event_start + timedelta(minutes = 1))
+    lastEndTime = new_event_end
+    for event in events:
+        event_length = event.end_time - event.starting_time
+        event.starting_time = lastEndTime + timedelta(minutes = 15)
+        event.end_time = lastEndTime + timedelta(minutes = 15) +event_length
+        event.save()
+        lastEndTime = event.end_time
+
+
+@api_view(['POST'])
 def custom_event(request):
     """ Create Custom event
 

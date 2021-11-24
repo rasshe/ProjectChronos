@@ -11,7 +11,6 @@ const Calendar = (props) => {
   const [showModal, setShowModal] = useState(false)
   const [currentEventId, setCurrentEventId] = useState("")
   const [event, setEvent] = useState({})
-  console.log(props.events)
   const fetchEvent = (id) => {
     setCurrentEventId(id)
     axiosInstance
@@ -23,13 +22,10 @@ const Calendar = (props) => {
   }
 
   const updateField = (field, value) => {
-    console.log(field, value, event)
-
     event[field] = value
     setEvent({...event})
   }
   const handleUpdateEvent = () => {
-    console.log(event)
     axiosInstance
       .post(`view_event_detail/${currentEventId}`, event).then(e => console.log(e))
   }
@@ -39,7 +35,6 @@ const Calendar = (props) => {
       plugins={[timeGridPlugin]}
       initialView="timeGridWeek"
       events={props.events}
-      height="500px"
       eventClick={(e) => {
         setShowModal(true)
         fetchEvent(e.event.id)

@@ -5,11 +5,10 @@ import { useHistory } from "react-router-dom";
 
 const FormPage = () => {
   const history = useHistory();
-  const [listHidden, setListHidden] = useState(true);
+  const [noNewEvents, setNoNewEvents] = useState(false)
   const [newDeadlines, setNewDeadlines] = useState([]);
   const [file, setFile] = useState("");
   const handleSubmitFile = (e) => {
-    setListHidden(false);
     e.preventDefault();
     if (!file) {
       alert("No file selected");
@@ -18,8 +17,16 @@ const FormPage = () => {
     let formData = new FormData();
     formData.append("file", file);
     axiosInstance.post("calendar_file/", formData).then((r) => {
+      if (r.data.length == 0) {
+        setFile("")
+        setNoNewEvents(true)
+      }
+      else {
       console.log(r.data);
+      setFile("")
       setNewDeadlines(r.data);
+      setNoNewEvents(false)
+      }
     });
   };
   const handleTimeAllocation = (value, index) => {
@@ -68,6 +75,7 @@ const FormPage = () => {
           </Col>
         </Row>
         <br />
+        <h2 hidden={!noNewEvents}>There were no new deadlines in this file! Check a new file or go to calendar</h2>
         <div hidden={newDeadlines.length === 0}>
           <h2 class="text-center pt-5">Found events</h2>
           <p class="text-center lead pb-5">Found events via parsing the Ical. Now you have an option to allocate how many hours you might need for completion of each deadline.</p>
