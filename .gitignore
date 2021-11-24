@@ -1,0 +1,3 @@
+backend/staticfiles/*
+backend/static/*
+backend/db.sqlite3

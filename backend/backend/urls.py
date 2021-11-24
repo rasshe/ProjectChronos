@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/deadlines/', DeadlineView,name="Calendar_deadlines"),
     path('api/public_events/', PublicEventView,name="All_public_events"),
 
+    path('api/sharedevent/<str:uid>',get_shared_link,name="Shared_event"),
     path('api/view_event_detail/<int:id>',event_detail,name="Event_detail"),
     path('api/custom_event/',custom_event,name="event_custom"),
     path('api/user/', UserView)

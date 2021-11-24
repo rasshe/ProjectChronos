@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Row, Button, Container } from "react-bootstrap";
+import { Form, Row, Button,Col, Container } from "react-bootstrap";
 import axiosInstance from "../axios";
 import { useHistory } from "react-router-dom";
 
@@ -41,43 +41,55 @@ const FormPage = () => {
   return (
     <>
       <Container>
-        <h1>Form!</h1>
-
-        <Form>
-          <Form.Group as={Row}>
-            <Form.Label>Enter File</Form.Label>
-            <Form.Control
-              type="file"
-              onChange={(e) => setFile(e.target.files[0])}
-            ></Form.Control>
-          </Form.Group>
-          <Button
-            as={Row}
-            variant="success"
-            type="submit"
-            onClick={handleSubmitFile}
-          >
-            {" "}
-            Check{" "}
-          </Button>
-        </Form>
-
+        <Row>
+          <Col>
+            <h1 class="text-center">Calendar import </h1>
+            <p class="">Import your ical file. ICal file can be found in bottom part of Mycourses 'calendar'-section.</p>
+          </Col>
+          <Col>
+            <Form>
+              <Form.Group as={Row}>
+                <Form.Label>Enter File</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
+                ></Form.Control>
+              </Form.Group>
+              <Button
+                as={Row}
+                variant="success"
+                type="submit"
+                onClick={handleSubmitFile}
+              >
+                {" "}
+                Check{" "}
+              </Button>
+            </Form>
+          </Col>
+        </Row>
         <br />
-
         <div hidden={newDeadlines.length === 0}>
+          <h2 class="text-center pt-5">Found events</h2>
+          <p class="text-center lead pb-5">Found events via parsing the Ical. Now you have an option to allocate how many hours you might need for completion of each deadline.</p>
           {newDeadlines.map((dl, i) => (
-            <div key={i}>
+            <div key={i} className={i%2==0 ? 'bg-light': 'bg-white'}>
               <h3>{dl.summary}</h3>
-              <p>{dl.description}</p>
+              <p class="small">{dl.description}</p>
               <p>
-                <b>DL:</b>
-                {dl.time}
+                <b>Deadline:</b>
+                {new Date(dl.time).toGMTString()}
               </p>
-              Time allocation:{" "}
-              <input
+              <div class="input-group">
+                <b>Time allocation:</b>{" "}
+                <input
                 type="number"
-                onChange={(e) => handleTimeAllocation(e.target.value, i)}
-              />
+                  class="form-control"
+                  onChange={(e) => handleTimeAllocation(e.target.value, i)}
+                />
+                <div class="input-group-append">
+                <span class="input-group-text">Hours</span>
+                </div>
+                </div>
               <hr />
             </div>
           ))}

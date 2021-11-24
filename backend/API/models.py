@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import uuid
    
 class Study_events(models.Model):
     name = models.CharField(max_length= 300)
@@ -11,6 +11,7 @@ class Study_events(models.Model):
     is_public = models.BooleanField(default=False)
     place = models.CharField(max_length= 300,blank=True, default="")
     attendees = models.IntegerField(default=0)
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
 class Deadlines(models.Model):
     name = models.CharField(max_length= 30)

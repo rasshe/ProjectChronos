@@ -293,7 +293,16 @@ def event_detail(request,id):
     else:
         raise Http404()
     '''
+@api_view(['POST', 'GET'])
+def get_shared_link(request,uid):
+    if request.method == 'GET':
+        event_obj = get_object_or_404(Study_events,unique_id = uid)
+        return Response(EventSerializer(event_obj).data)            
+    else:
+        raise Http404()
 
 
 def get_hyped_events(request):
     pass
+
+
