@@ -42,7 +42,7 @@ import React from 'react';
                 <b>Description:</b> <span style={{display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden"}}>{props.info.description}</span>
                 <br />
                 <b>Date: </b>
-                <Moment format= "L, dddd">{props.info.starting_time}</Moment>
+                <Moment format= "DD/MM/YYYY, dddd">{props.info.starting_time}</Moment>
                 <br/>
                 <b>Time: </b>
                <Moment format= "HH:mm">{props.info.starting_time}</Moment>

@@ -21,6 +21,8 @@ const PublicEventsPage = () => {
   const [events, setEvents] = useState([]);
   const [query, setQuery] = useState("");
   const [filterData, setFilteredData] = useState([]);
+  const [dateFilter, setDateFilter] = useState([]);
+
 
   useEffect(() => {
     axiosInstance.get("public_events/").then((r) => {
@@ -28,12 +30,16 @@ const PublicEventsPage = () => {
       console.log(r.data.map((e) => e.fields));
     }).catch((err) => console.log(err));
   }, []);
-
+  const dateFormat = new Date()
+  
   useEffect(() => {
+    const filtered = dateFilter? events.filter((event) => dateFilter  == event.starting_time.split("T")[0]) : events
+
     setFilteredData(
-      events.filter((event) => event.name.toLowerCase().includes(query.toLowerCase()))
+      filtered.filter((event) => event.name.toLowerCase().includes(query.toLowerCase()))
+      
     )
-  }, [query, events])
+  }, [query, events, dateFilter])
 
 
   return (
@@ -109,6 +115,7 @@ const PublicEventsPage = () => {
         <label style={{fontWeight: 'bold'}}>Search</label>
         <br/>
         <input type="text" onChange={e => setQuery(e.target.value)} />
+        <label>Day</label><input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}/>
         <CardGroup>
           {filterData.length === 0 ? <div>No result found</div> : filterData.map((val) => {
             return <EventCard info={val}>
