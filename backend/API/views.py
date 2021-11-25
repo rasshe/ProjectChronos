@@ -292,9 +292,9 @@ def event_detail(request,id):
 
     if request.method == "POST":
         
-        #event_obj = get_list_or_404(Study_events,id = id, owner_id=request.user)
+        event_obj = get_object_or_404(Study_events,id = id, owner_id=request.user)
         
-        event_obj = get_object_or_404(Study_events,id = id)
+        # event_obj = get_object_or_404(Study_events,id = id)
         
         #Modify event that user owns
         if Study_events.objects.filter(id= event_obj.id).exists(): 
