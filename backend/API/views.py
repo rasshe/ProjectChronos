@@ -105,7 +105,7 @@ def RegisterView(request):
 
         if user_create_form.is_valid():
             a= user_create_form.save()
-
+            
             calendar = Calendar(user_id= a)
             calendar.save()
             #print("new user", a)
@@ -335,7 +335,7 @@ def event_detail(request,id):
                 return Http404()
         else:
             calendar_obj.studyevents.remove(event_obj)
-            
+            return Response("OK")
 
             
         
