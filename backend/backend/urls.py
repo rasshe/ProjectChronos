@@ -40,5 +40,10 @@ urlpatterns = [
     path('api/view_event_detail/<int:id>',event_detail,name="Event_detail"),
     path('api/custom_event/',custom_event,name="event_custom"),
     path('api/custom_event_and_move/',add_custom_event_and_move),
-    path('api/user/', UserView)
+    path('api/user/', UserView),
+
+
+    path('api/joinevent/<str:unique_id>',join_event,name="Join_event"),
+
+
 ] 

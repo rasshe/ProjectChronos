@@ -104,6 +104,9 @@ def RegisterView(request):
 
         if user_create_form.is_valid():
             a= user_create_form.save()
+
+            calendar = Calendar(user_id= a)
+            calendar.save()
             #print("new user", a)
             return Response("Got it!")
         else:
@@ -347,4 +350,43 @@ def get_shared_link(request,uid):
 def get_hyped_events(request):
     pass
 
+
+@api_view(['POST'])
+def join_event(request,unique_id):
+
+    Event = get_object_or_404(Study_events, unique_id=unique_id)
+    #Event = get_object_or_404(Study_events, id = 1)
+    
+    if request.user.is_authenticated:
+        if request.method=="POST":
+
+            cal = Calendar.objects.get(user_id=request.user)
+            
+            
+            if Event in cal.studyevents.all():
+                #User is alrady in this...
+                
+                return Response("JOINED")
+            
+            # Get datetime start.
+            ev_start = Event.starting_time
+            ev_end = Event.end_time
+            move_events_down(cal,ev_start,ev_end)
+
+            cal.studyevents.add(Event)
+            Event.attendees = Event.attendees+1
+            Event.save()
+            
+
+            #ev_end_date = Event.end_time.date()
+
+            #print("----",ev_start_date)
+            #print("____",ev_end_date)
+
+            
+
+    return Response("lupadupa")
+
+
+    pass
 
