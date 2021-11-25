@@ -218,9 +218,9 @@ hyped.map((hypedEvent) => (
 <Carousel.Item>
               <Card>
                 <Card.Body>
-                  <Card.Title>{hypedEvent.name}</Card.Title>
+                  <Card.Title>{hypedEvent.name.slice(0,50)}</Card.Title>
                   <Card.Text>
-                    <b>Description:</b> {hypedEvent.description}
+                    <b>Description:</b> {hypedEvent.description.slice(0,50)}
                     <br />
                     <b>Date and time:</b>{hypedEvent.starting_time}
                     <br />
@@ -250,7 +250,8 @@ hyped.map((hypedEvent) => (
 <h2 class="text-center">
   Joinable events
 </h2>
-<Row xs={2} md={3} className="g-4">
+
+<Row xs={2} md={3} className=" p-5 g-4">
   {
   
 
