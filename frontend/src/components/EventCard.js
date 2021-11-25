@@ -67,7 +67,7 @@ import { Link } from "react-router-dom";
                
               </small>
              
-              <Link to={"/object/:" + props.info.unique_id} className="btn btn-primary">Read more</Link>
+              <Link to={"/object/" + props.info.unique_id} className="btn btn-primary">Read more</Link>
             </Card.Footer>
           </Card>
 

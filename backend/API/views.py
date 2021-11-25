@@ -333,8 +333,8 @@ def event_detail(request,id):
                 return HttpResponseRedirect('api/calendar/')
             else:
                 return Http404()
-        elif event_obj.unique_id in calendar_obj.studyevents:
-            calendar_obj.studyevents.remove(event_obj.unique_id )
+        else:
+            calendar_obj.studyevents.remove(event_obj)
             
 
             
