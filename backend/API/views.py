@@ -346,8 +346,21 @@ def get_shared_link(request,uid):
     else:
         raise Http404()
 
-
+@api_view(['GET'])
 def get_hyped_events(request):
+    numobjs= 3
+    try:
+        obj = Study_events.objects.filter(is_public=False).order_by('-attendees').all()[0:3] 
+    except:
+        obj_len = Study_events.objects.filter(is_public=True).count()
+        obj = Study_events.objects.filter(is_public=False).order_by('-attendees').all()[0:obj_len]
+    serializer = EventSerializer(obj,many=True)
+    print(obj)
+    return Response(serializer.data)
+    #Study_events.objects.filter(is_public=True).order_by('attendees')[0:]
+
+
+
     pass
 
 
@@ -366,7 +379,7 @@ def join_event(request,unique_id):
             if Event in cal.studyevents.all():
                 #User is alrady in this...
                 
-                return Response("JOINED")
+                return Response("NOK")
             
             # Get datetime start.
             ev_start = Event.starting_time
@@ -378,14 +391,10 @@ def join_event(request,unique_id):
             Event.save()
             
 
-            #ev_end_date = Event.end_time.date()
-
-            #print("----",ev_start_date)
-            #print("____",ev_end_date)
-
+            
             
 
-    return Response("lupadupa")
+    return Response("OK")
 
 
     pass

@@ -28,6 +28,10 @@ const FrontPage = () => {
   const [password2, setPassword2] = useState();
 
 
+  const [hyped, setHyped] = useState([]);
+
+
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -61,6 +65,16 @@ const FrontPage = () => {
   };
 
 
+ useEffect( ()=> {
+  axiosInstance.get("hypedevents/").then((r) => {
+    console.log(r);
+    setHyped(r.data);
+  })
+
+
+ },[]);
+
+  
   const handleRegViewChange = (e) =>{
 
 
@@ -186,60 +200,36 @@ const FrontPage = () => {
       <Col>
       <h2>Promoted events</h2>
       <Carousel>
-            <Carousel.Item>
+            
+            
+{
+hyped.map((hypedEvent) => (
+
+<Carousel.Item>
               <Card>
                 <Card.Body>
-                  <Card.Title>Lab 101: Deadline 4:</Card.Title>
+                  <Card.Title>{hypedEvent.name}</Card.Title>
                   <Card.Text>
-                    <b>Description:</b> Work on group assigment...
+                    <b>Description:</b> {hypedEvent.description}
                     <br />
-                    <b>Date and time:</b> Monday 4.October from 3 pm to 6 pm.
+                    <b>Date and time:</b>{hypedEvent.starting_time}
                     <br />
-                    <b>Location:</b> Roberts cafe in Ablock
+                    <b>Location:</b> {hypedEvent.place}
                   </Card.Text>
                 </Card.Body>
                 <Card.Footer>
-                  <small className="text-muted">5 attendees</small>
+                  <small className="text-muted">{hypedEvent.attendees} attendees</small>
                   <Button variant="secondary">Join</Button>
                 </Card.Footer>
               </Card>
             </Carousel.Item>
-            <Carousel.Item>
-              <Card>
-                <Card.Body>
-                  <Card.Title>Lab 101: Deadline 4:</Card.Title>
-                  <Card.Text>
-                    <b>Description:</b> Work on group assigment...
-                    <br />
-                    <b>Date and time:</b> Monday 4.October from 3 pm to 6 pm.
-                    <br />
-                    <b>Location:</b> Roberts cafe in Ablock
-                  </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                  <small className="text-muted">5 attendees</small>
-                  <Button variant="secondary">Join</Button>
-                </Card.Footer>
-              </Card>
-            </Carousel.Item>
-            <Carousel.Item>
-              <Card>
-                <Card.Body>
-                  <Card.Title>Lab 101: Deadline 4:</Card.Title>
-                  <Card.Text>
-                    <b>Description:</b> Work on group assigment...
-                    <br />
-                    <b>Date and time:</b> Monday 4.October from 3 pm to 6 pm.
-                    <br />
-                    <b>Location:</b> Roberts cafe in Ablock
-                  </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                  <small className="text-muted">5 attendees</small>
-                  <Button variant="secondary">Join</Button>
-                </Card.Footer>
-              </Card>
-            </Carousel.Item>
+)
+)
+
+}
+
+
+            
           </Carousel>
 
       </Col>

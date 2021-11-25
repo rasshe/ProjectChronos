@@ -41,7 +41,7 @@ urlpatterns = [
     path('api/custom_event/',custom_event,name="event_custom"),
     path('api/custom_event_and_move/',add_custom_event_and_move),
     path('api/user/', UserView),
-
+    path("api/hypedevents/",get_hyped_events),
 
     path('api/joinevent/<str:unique_id>',join_event,name="Join_event"),
 
