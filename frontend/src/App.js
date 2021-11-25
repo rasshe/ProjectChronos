@@ -32,9 +32,11 @@ function App() {
           <Navbar.Brand href="/">Project Chronos</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
+            {username && (<>
             <Nav.Link href="/input-form">Form</Nav.Link>
             <Nav.Link href="/calendar">Calendar</Nav.Link>
             <Nav.Link href="/events">Events</Nav.Link>
+             </>) }
             <Logout/>
             <span className="text-light my-auto mx-2">{username}</span>
           </Nav>
@@ -44,7 +46,6 @@ function App() {
       <Switch>
 
         <Route path="/object/:topicId">
-        <Mybeatifulcomponent />
         <SharedEvent/>
         </Route>
         <Route path="/calendar">
@@ -63,10 +64,5 @@ function App() {
     </Router>
   );
 }
-const Mybeatifulcomponent = () => {
-    let { topicId } = useParams();
-    return <h3>Requested topic ID: {topicId}</h3>;
-    
 
-}
 export default App;
