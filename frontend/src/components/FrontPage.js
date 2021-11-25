@@ -13,6 +13,7 @@ import {
 import axiosInstance from "../axios";
 import { useHistory } from "react-router-dom";
 
+import EventCard from "./EventCard";
 
 
 const FrontPage = () => {
@@ -36,6 +37,7 @@ const FrontPage = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   
+  const [events, setEvents] = useState([]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -74,7 +76,15 @@ const FrontPage = () => {
 
  },[]);
 
-  
+ useEffect(() => {
+  axiosInstance.get("public_events/").then((r) => {
+    setEvents(r.data.map((e) => e.fields));
+    console.log(r.data.map((e) => e.fields));
+  }).catch((err) => console.log(err));
+}, []);
+
+
+
   const handleRegViewChange = (e) =>{
 
 
@@ -241,28 +251,20 @@ hyped.map((hypedEvent) => (
   Joinable events
 </h2>
 <Row xs={2} md={3} className="g-4">
-  {Array.from({ length: 4 }).map((_, idx) => (
-    <Col>
-      
-              <Card>
-                <Card.Body>
-                  <Card.Title>Lab 101: Deadline 4:</Card.Title>
-                  <Card.Text>
-                    <b>Description:</b> Work on group assigment...
-                    <br />
-                    <b>Date and time:</b> Monday 4.October from 3 pm to 6 pm.
-                    <br />
-                    <b>Location:</b> Roberts cafe in Ablock
-                  </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                  <small className="text-muted">5 attendees</small>
-                  <Button variant="secondary">Join</Button>
-                </Card.Footer>
-              </Card>
+  {
+  
 
-    </Col>
-  ))}
+
+  <>
+          {events.map((val) => {
+            return <EventCard info={val}>
+          
+            </EventCard>
+          
+          })}
+  </>
+}
+
 </Row>
 
 </Container>

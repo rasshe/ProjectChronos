@@ -107,10 +107,10 @@ def RegisterView(request):
 
             calendar = Calendar(user_id= a)
             calendar.save()
-            #print("new user", a)
+            print("new user", a)
             return Response("Got it!")
         else:
-            #print(user_create_form.errors)
+            print(user_create_form.errors)
             #print("NOGO")
             return Response("NOGO")
         
@@ -350,10 +350,10 @@ def get_shared_link(request,uid):
 def get_hyped_events(request):
     numobjs= 3
     try:
-        obj = Study_events.objects.filter(is_public=False).order_by('-attendees').all()[0:3] 
+        obj = Study_events.objects.filter(is_public=True).order_by('-attendees').all()[0:3] 
     except:
         obj_len = Study_events.objects.filter(is_public=True).count()
-        obj = Study_events.objects.filter(is_public=False).order_by('-attendees').all()[0:obj_len]
+        obj = Study_events.objects.filter(is_public=True).order_by('-attendees').all()[0:obj_len]
     serializer = EventSerializer(obj,many=True)
     print(obj)
     return Response(serializer.data)
@@ -361,7 +361,6 @@ def get_hyped_events(request):
 
 
 
-    pass
 
 
 @api_view(['POST'])
@@ -394,8 +393,7 @@ def join_event(request,unique_id):
             
             
 
-    return Response("OK")
+        return Response("OK")
+    return Response("NOK")
 
-
-    pass
 
