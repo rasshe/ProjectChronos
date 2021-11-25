@@ -12,6 +12,7 @@ import axiosInstance from "../axios";
 import Moment from 'react-moment';
 import 'moment-timezone';
 import React from 'react';
+import { Link } from "react-router-dom";
 
   const images = [
     "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -50,6 +51,8 @@ import React from 'react';
                <Moment format= " HH:mm">{props.info.end_time}</Moment>
                <br/>
                 <b>Location:</b> {props.info.place}
+               
+                
               </Card.Text>
             </Card.Body>
             <Card.Footer
@@ -61,8 +64,10 @@ import React from 'react';
             >
               <small className="text-muted">
                 {props.info.attendees} attendees!
+               
               </small>
-              <Button>Read more</Button>
+             
+              <Link to={"/object/" + props.info.unique_id} className="btn btn-primary">Read more</Link>
             </Card.Footer>
           </Card>
 

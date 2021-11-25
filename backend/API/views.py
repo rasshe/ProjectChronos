@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.core import serializers
@@ -13,7 +14,7 @@ from rest_framework.response import Response
 from datetime import datetime, timedelta
 import math
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, get_object_or_404, Http404
+from django.shortcuts import redirect, render, get_object_or_404, Http404
 
 
 from django.contrib.auth.decorators import login_required
@@ -104,7 +105,7 @@ def RegisterView(request):
 
         if user_create_form.is_valid():
             a= user_create_form.save()
-
+            
             calendar = Calendar(user_id= a)
             calendar.save()
             print("new user", a)
@@ -265,7 +266,7 @@ def custom_event(request):
             return Response("NO")
     else:
         raise Http404()
-@api_view(['POST', 'GET'])
+@api_view(['POST', 'GET', 'DELETE'])
 def event_detail(request,id):
     """ Modify and view event details
 
@@ -291,9 +292,9 @@ def event_detail(request,id):
 
     if request.method == "POST":
         
-        #event_obj = get_list_or_404(Study_events,id = id, owner_id=request.user)
+        event_obj = get_object_or_404(Study_events,id = id, owner_id=request.user)
         
-        event_obj = get_object_or_404(Study_events,id = id)
+        # event_obj = get_object_or_404(Study_events,id = id)
         
         #Modify event that user owns
         if Study_events.objects.filter(id= event_obj.id).exists(): 
@@ -323,6 +324,21 @@ def event_detail(request,id):
             else:
                 raise Http404()
         #return Response(EventSerializer(event_obj).data)
+    elif request.method=="DELETE":
+        event_obj = get_object_or_404(Study_events,id = id)
+        calendar_obj= Calendar.objects.get(user_id= request.user)
+        if event_obj.owner_id == request.user:
+            if event_obj.attendees < 2:
+                event_obj.delete()
+                return HttpResponseRedirect('api/calendar/')
+            else:
+                return Http404()
+        else:
+            calendar_obj.studyevents.remove(event_obj)
+            return Response("OK")
+
+            
+        
     '''
     elif request.method =="GET":
         event_obj = get_list_or_404(Study_events,id = id, owner_id=request.user)
