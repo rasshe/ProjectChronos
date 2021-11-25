@@ -21,6 +21,8 @@ const CalendarPage = () => {
         title: event.fields.name,
         start: Date.parse(event.fields.starting_time.slice(0, -1)),
         end: Date.parse(event.fields.end_time.slice(0, -1)),
+        backgroundColor: event.fields.is_public ? "#ddaa00" : "",
+        borderColor: event.fields.is_public ? "#cc9900" : "",
       }
       })
       setEvents(formatted)
