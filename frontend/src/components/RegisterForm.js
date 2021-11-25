@@ -52,22 +52,22 @@ const RegisterForm = (props) => {
     <Offcanvas show={props.show} onHide={handleClose} placement="top">
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>
-          <h2>Login</h2>
+          <h2 style={{fontFamily: 'avenir'}}>Login</h2>
         </Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body className="align-center">
         <Container>
           <Row>
-            <Col>
+            <Col style={{fontFamily: 'avenir'}}>
               <h3>Project Chronos</h3>
               <h4 class="lead">No account? No worries. You can create one </h4>
               <Button onClick={handleRegViewChange}>Create</Button>
             </Col>
             <Col>
               {!RegisterUser ? (
-                <Form>
+                <Form style={{fontFamily: 'avenir'}}>
                   <p>
-                    <label for="id_username_L">Username:</label>{" "}
+                    <label style={{fontFamily: 'avenir'}} for="id_username_L">Username:</label>{" "}
                     <input
                       type="text"
                       autofocus=""
@@ -78,7 +78,7 @@ const RegisterForm = (props) => {
                     />
                   </p>
                   <p>
-                    <label for="id_password_L">Password:</label>{" "}
+                    <label style={{fontFamily: 'avenir'}} for="id_password_L">Password:</label>{" "}
                     <input
                       type="password"
                       value={password}
@@ -92,7 +92,7 @@ const RegisterForm = (props) => {
                   </Button>
                 </Form>
               ) : (
-                <Form>
+                <Form style={{fontFamily: 'avenir'}}>
                   <p>
                     <label for="id_username">Username:</label>{" "}
                     <input

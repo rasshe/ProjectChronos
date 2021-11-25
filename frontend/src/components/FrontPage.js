@@ -53,7 +53,7 @@ const FrontPage = () => {
           <h1 class="lead-1">Project Chronos....</h1>
         </Row>
 
-        <Row>
+        <Row  style={{fontFamily: 'avenir'}}>
           <Col>
             <h1>What?</h1>
             <h3 class="lead">
@@ -79,7 +79,8 @@ const FrontPage = () => {
                   <Card>
                     <Card.Body>
                       <Card.Title>{hypedEvent.name.slice(0, 50)}</Card.Title>
-                      <Card.Text>
+                      <Card.Text
+                      >
                         <b>Description:</b>{" "}
                         {hypedEvent.description.slice(0, 50)}
                         <br />
@@ -89,11 +90,17 @@ const FrontPage = () => {
                         <b>Location:</b> {hypedEvent.place}
                       </Card.Text>
                     </Card.Body>
-                    <Card.Footer>
+                    <Card.Footer
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                    >
                       <small className="text-muted">
                         {hypedEvent.attendees} attendees
                       </small>
-                      <Button variant="secondary">Join</Button>
+                      <Button variant="primary">Join</Button>
                     </Card.Footer>
                   </Card>
                 </Carousel.Item>

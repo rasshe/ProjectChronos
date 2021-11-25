@@ -52,7 +52,8 @@ const PublicEventsPage = () => {
         </Col>
 
         <Col>
-          <Carousel>
+          <Carousel
+          >
             <Carousel.Item>
               <Card>
                 <Card.Body>
@@ -65,7 +66,14 @@ const PublicEventsPage = () => {
                     <b>Location:</b> Roberts cafe in Ablock
                   </Card.Text>
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer
+                 style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  fontFamily: 'avenir'
+                }}
+                >
                   <small className="text-muted">5 attendees</small>
                   <Button>Join</Button>
                 </Card.Footer>
@@ -83,7 +91,13 @@ const PublicEventsPage = () => {
                     <b>Location:</b> Roberts cafe in Ablock
                   </Card.Text>
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer
+                 style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  fontFamily: 'avenir'
+                }}x>
                   <small className="text-muted">5 attendees</small>
                   <Button>Join</Button>
                 </Card.Footer>
@@ -101,7 +115,13 @@ const PublicEventsPage = () => {
                     <b>Location:</b> Roberts cafe in Ablock
                   </Card.Text>
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    fontFamily: 'avenir'
+                  }}x>
                   <small className="text-muted">5 attendees</small>
                   <Button>Join</Button>
                 </Card.Footer>
@@ -111,10 +131,18 @@ const PublicEventsPage = () => {
         </Col>
       </Row>
       <Row>
-        <label style={{fontWeight: 'bold'}}>Search</label>
-        <br/>
+        <div>
+        <b style={{}}>Search </b>
         <input type="text" onChange={e => setQuery(e.target.value)} />
-        <label>Day</label><input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}/>
+        
+        <b> Day </b>
+        
+        <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}/>
+        </div>
+        
+        <br/>
+        <br/>
+        <br/>
         <CardGroup>
           {filterData.length === 0 ? <div>No result found</div> : filterData.map((val) => {
             return <EventCard info={val}>

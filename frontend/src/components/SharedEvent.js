@@ -12,6 +12,7 @@ import {
   CardGroup,
 } from "react-bootstrap";
 import RegisterForm from "./RegisterForm";
+import Moment from 'react-moment';
 const SharedEvent = (props) => {
   let { topicId } = useParams();
   const [show, setShow] = useState(false);
@@ -61,29 +62,63 @@ const SharedEvent = (props) => {
   return (
     <>
       <Container>
-        <Row>
-          <h1>Event: {event.name} </h1>
+        <Row >
+          <h1 style= {{
+          display: 'flex',
+          fontFamily: "avenir",
+          fontSize: 30,
+          margin: 20,
+          paddingRight: 99
+        }}>Event: {event.name} </h1>
         </Row>
         <Row>
           <Card>
             <Card.Img
+            className="h-50 w-50"  
               fluid="false"
               variant="top"
+              width= "100rem"
               src="https://cdn.pixabay.com/photo/2015/05/31/13/45/young-woman-791849_960_720.jpg"
+            
             />
             <Card.Body>
-              <Card.Title>{event.name}</Card.Title>
-              <Card.Text>
-                <b>Description:</b> {event.description}
+              <Card.Title style={{fontFamily: 'avenir'}}>{event.name}</Card.Title>
+              <Card.Text 
+              style={{
+                fontFamily: "avenir"
+              }}
+              >
+                <b>Description: </b> 
+                {event.description}
+                <br/>
+                 <br/>
+                 <b>
+                {event["is_public"] ? " - This event is public - " : "- This event is private -"}
+                </b>
                 <br />
-                <b>Starting Date and time:</b> {event.starting_time.to}
-                <br />
+                <br/>
+                <b>Date: </b> 
+                <Moment format= "DD/MM/YYYY, dddd">{event.starting_time}</Moment>
+                <br/>
+                <b>Time: </b>
+               <Moment format= "HH:mm">{event.starting_time}</Moment>
+                 <b> to  </b>
+               <Moment format= " HH:mm">{event.end_time}</Moment>
+               <br/>
                 <b>Location:</b> {event.place}
+               
               </Card.Text>
             </Card.Body>
-            <Card.Footer>
-              <small className="text-muted">{event.attendees} attendees</small>
-              <Button variant="secondary" onClick={handlejoin}>
+            <Card.Footer
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                fontFamily: 'avenir'
+              }}
+            >
+              <small className="text-muted">{event.attendees} attendees </small>
+              <Button variant="primary" onClick={handlejoin}>
                 Join
               </Button>
             </Card.Footer>
