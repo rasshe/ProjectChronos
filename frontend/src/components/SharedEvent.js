@@ -45,6 +45,21 @@ const SharedEvent = (props) => {
       
       }, []);
 
+      const handlejoin =() => {
+
+
+      axiosInstance.post("joinevent/"+topicId, {
+
+        "ey":true
+          }).then((r) => {
+          console.log(r)
+      });
+
+
+      }
+      
+      
+
 
     return (
     <>
@@ -67,7 +82,7 @@ const SharedEvent = (props) => {
                 </Card.Body>
                 <Card.Footer>
                   <small className="text-muted">{event.attendees} attendees</small>
-                  <Button variant="secondary">Join</Button>
+                  <Button variant="secondary" onClick={handlejoin}>Join</Button>
                 </Card.Footer>
               </Card>
       </Row>
