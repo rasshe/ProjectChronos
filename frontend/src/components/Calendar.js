@@ -21,6 +21,18 @@ const Calendar = (props) => {
       })
   }
 
+
+const deleteData=() =>
+{
+
+  if(window.confirm("Are you sure?")){
+    axiosInstance.delete(`view_event_detail/${currentEventId}`, {
+    })
+  }
+
+   }
+
+
   const updateField = (field, value) => {
     event[field] = value
     setEvent({...event})
@@ -52,6 +64,7 @@ const Calendar = (props) => {
             <div key={field}><label>{field}</label><input value={event[field]} onChange={(e) => updateField(field, e.target.value)}/></div>
           ))}
           <Button onClick={handleUpdateEvent}>SEND</Button>
+          <Button onClick={deleteData} variant="danger">DELETE</Button>
         </Modal.Body>
       </Modal>
     </>
