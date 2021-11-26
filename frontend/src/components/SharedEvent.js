@@ -51,8 +51,8 @@ const SharedEvent = (props) => {
       axiosInstance.post("joinevent/"+topicId, {
 
         "ey":true
-          }).then((r) => {
-          console.log(r)
+        }).then((r) => {
+        console.log(r)
       });
 
 

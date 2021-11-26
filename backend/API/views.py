@@ -77,7 +77,9 @@ def DeadlineView(request):
 
 @api_view(['GET'])
 def PublicEventView(request):
-    public_events = Study_events.objects.filter(is_public=True)
+
+    
+    public_events = Study_events.objects.filter(is_public=True, end_time__gte = timezone.now())
     data = serializers.serialize("json", public_events)
     return HttpResponse(data)
 
@@ -205,28 +207,110 @@ def add_custom_event_and_move(request):
         new_event_start_time = serializer.validated_data.get('starting_time')
         new_event_end_time = serializer.validated_data.get('end_time')
         calendar = Calendar.objects.get(user_id= request.user)
+        
+
+        
+        #Get the frsh one, not the cached one. 
+        #calendar = Calendar.objects.get(user_id= request.user)
+
         move_events_down(calendar, new_event_start_time, new_event_end_time)
         a = serializer.save(owner_id=request.user)
         calendar.studyevents.add(a)
+        
         return HttpResponse("OK")
     return HttpResponseBadRequest()
     
 
 def move_events_down(calendar, new_event_start, new_event_end):
-    affected_events = Study_events.objects.filter(is_public=True)
+    not_affected_events = calendar.studyevents.filter(is_public=True)
+
     events = calendar.studyevents.filter(
                                         starting_time__year = new_event_start.year, 
                                         starting_time__month = new_event_start.month, 
                                         starting_time__day=new_event_start.day, 
-                                        end_time__gt=new_event_start + timedelta(minutes = 1))
+                                        end_time__gt=new_event_start + timedelta(minutes = 1)).order_by('starting_time')
     lastEndTime = new_event_end
+    print(events.values_list('starting_time'))
+    PASS_FUN = False
     for event in events:
-        event_length = event.end_time - event.starting_time
-        event.starting_time = lastEndTime + timedelta(minutes = 15)
-        event.end_time = lastEndTime + timedelta(minutes = 15) +event_length
-        event.save()
-        lastEndTime = event.end_time
 
+        if not PASS_FUN and event in not_affected_events:
+            
+            continue
+
+
+        if PASS_FUN and not_affected_events.filter(starting_time__gte=event.starting_time, end_time__lte= event.starting_time).exists():
+            # event is starting during the fixed event. push it after the fxd event
+            fixd_ev= not_affected_events.filter(starting_time__gte=event.starting_time, end_time__lte= event.end_time)[0]
+            print("EV START HIT")
+            if event.id ==fixd_ev.id:
+                lastEndTime = fixd_ev.end_time
+                print("same ev hit, no moving ")
+                continue
+
+            lastEndTime = fixd_ev.end_time
+            
+            event_length = event.end_time - event.starting_time
+            event.starting_time = lastEndTime + timedelta(minutes = 15)
+            event.end_time = lastEndTime + timedelta(minutes = 15) +event_length
+            event.save()
+            lastEndTime = event.end_time
+        
+        
+        elif PASS_FUN and not_affected_events.filter(starting_time__gte=event.end_time, end_time__lte= event.end_time).exists():
+            # Event is ending during the fixed event...
+            fixd_ev = not_affected_events.filter(starting_time__gte=event.end_time, end_time__lte= event.end_time)[0]
+            print("ev-endhit")
+
+            if event.id ==fixd_ev.id:
+                lastEndTime = fixd_ev.end_time
+                print("same ev hit, no moving ")
+                continue
+
+            OR_LEN_event_length = event.end_time - event.starting_time
+
+
+
+            event_length = event.end_time - fixd_ev.starting_time
+            event.starting_time = lastEndTime + timedelta(minutes = 15)
+            event.end_time = fixd_ev.starting_time-timedelta(minutes = 15)
+            event.save()
+
+            #copy event
+            event.id=None
+            split_ev = event.save()
+            print(event)
+
+            lastEndTime = fixd_ev.end_time
+            #Split events into two
+
+            event_length = OR_LEN_event_length-event_length
+
+            event.starting_time = lastEndTime + timedelta(minutes = 15)
+            event.end_time = lastEndTime + timedelta(minutes = 15) +event_length
+            event.save()
+            lastEndTime = event.end_time
+
+
+            '''
+            event_length = event.end_time - event.starting_time
+            event.starting_time = lastEndTime + timedelta(minutes = 15)
+            lastEndTime = fixd_ev.end_time
+            
+            event_length = event.end_time - event.starting_time
+            event.starting_time = lastEndTime + timedelta(minutes = 15)
+            event.end_time = lastEndTime + timedelta(minutes = 15) +event_length
+            event.save()
+            '''
+
+        else:
+            #Original.
+            event_length = event.end_time - event.starting_time
+            event.starting_time = lastEndTime + timedelta(minutes = 15)
+            event.end_time = lastEndTime + timedelta(minutes = 15) +event_length
+            event.save()
+            lastEndTime = event.end_time
+            
 
 @api_view(['POST'])
 def custom_event(request):
@@ -366,10 +450,13 @@ def get_shared_link(request,uid):
 def get_hyped_events(request):
     numobjs= 3
     try:
-        obj = Study_events.objects.filter(is_public=True).order_by('-attendees').all()[0:3] 
+        obj = Study_events.objects.filter(is_public=True, end_time__gte = timezone.now()).order_by('-attendees').all()[0:3] 
     except:
-        obj_len = Study_events.objects.filter(is_public=True).count()
-        obj = Study_events.objects.filter(is_public=True).order_by('-attendees').all()[0:obj_len]
+        try:
+            obj_len = Study_events.objects.filter(is_public=True, end_time__gte = timezone.now()).count()
+            obj = Study_events.objects.filter(is_public=True, end_time__gte = timezone.now()).order_by('-attendees').all()[0:obj_len]
+        except:
+            obj=[]
     serializer = EventSerializer(obj,many=True)
     print(obj)
     return Response(serializer.data)
