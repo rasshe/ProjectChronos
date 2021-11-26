@@ -74,8 +74,9 @@ const deleteData=() =>
           <Modal.Title>Edit Event</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <label>Name</label>
+          <div style={{fontFamily: 'avenir'}}>
+            <label style={{fontWeight: 'bold'}}>Name</label>
+            <br/>
             {event["attendees"] > 1 ?
             <p>{event["name"]}</p>
             :
@@ -87,8 +88,8 @@ const deleteData=() =>
             />
             }
           </div>
-          <div>
-            <label>Description </label>
+          <div style={{fontFamily: 'avenir'}}>
+            <label  style={{fontWeight: 'bold'}}>Description </label>
             <textarea
               cols="50"
               rows="5"
@@ -96,20 +97,20 @@ const deleteData=() =>
               onChange={(e) => updateField("description", e.target.value)}
             />
           </div>
-          <div>
-            <label>Day</label>
+          <div style={{fontFamily: 'avenir'}}>
+            <label style={{fontWeight: 'bold'}}>Day</label>
             <p>{event["starting_time"]?.split("T")[0]}</p>
           </div>
-          <div>
-            <label>Start Time </label>
+          <div style={{fontFamily: 'avenir'}}>
+            <label  style={{fontWeight: 'bold'}}>Start Time </label>
             <p>{event["starting_time"]?.substring(11, 16)}</p>
           </div>
-          <div>
-            <label>End Time </label>
+          <div style={{fontFamily: 'avenir'}}>
+            <label  style={{fontWeight: 'bold'}}>End Time </label>
             <p>{event["end_time"]?.substring(11, 16)}</p>
           </div>
-          <div>
-            <label>Status</label>
+          <div style={{fontFamily: 'avenir'}}>
+            <label  style={{fontWeight: 'bold'}}>Status</label>
             <br/>
             <ToggleButton
               id="toggle-check"
@@ -122,7 +123,8 @@ const deleteData=() =>
             </ToggleButton>
           </div>
           <div>
-            <label>Location </label>
+            <br/>
+            <label style={{fontFamily: 'avenir', fontWeight: 'bold'}}>Location </label>
             <br/>
             {event["attendees"] > 1 ?
               <p>{event["place"]}</p>
@@ -134,16 +136,27 @@ const deleteData=() =>
             />
           }
           </div>
-          <div>
+          <br/>
+          <div style={{fontFamily: 'avenir', fontWeight: 'bold'}}>
             <label>Amount of registered users</label>
             <p>{event["attendees"]}</p>
           </div>
           <div>
-            <label>Shareable link </label>
+            <label style={{fontFamily: 'avenir', fontWeight:'bold'}}>Shareable link </label>
             <p><a href={window.location.origin + "/object/" + event["unique_id"]}>{window.location.origin + "/object/" + event["unique_id"]}</a></p>
           </div>
+          <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontFamily: 'avenir'
+          }}
+          
+          >
           <Button onClick={handleUpdateEvent}>SEND</Button>
           <Button onClick={deleteData} variant="danger">DELETE</Button>
+          </div>
           <div style={{background:"#ffaaaa", marginTop:"4", border:"1px solid red", borderRadius:"5"}} hidden={!showError}>
             <p style={{float: "right", marginRight: "10px", cursor: "pointer"}} onClick={() => setShowError(false)}>x</p>
             <h3>Error</h3>

@@ -2,278 +2,127 @@ import { useEffect, useState } from "react";
 import {
   Carousel,
   Card,
-  CardGroup,
   Col,
   Row,
   Button,
   Container,
-  Form,
-  Offcanvas,
 } from "react-bootstrap";
 import axiosInstance from "../axios";
 import { useHistory } from "react-router-dom";
 
 import EventCard from "./EventCard";
-
+import RegisterForm from "./RegisterForm";
 
 const FrontPage = () => {
   const history = useHistory();
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
-
-
-  const [RegisterUser , setRegisterUser] = useState(false);
-  
-  const [username1, setUsername1] = useState();
-  const [password1, setPassword1] = useState();
-  const [password2, setPassword2] = useState();
-
 
   const [hyped, setHyped] = useState([]);
 
-
-
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  
   const [events, setEvents] = useState([]);
+  const [show, setShow] = useState(false);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    axiosInstance
-      .post(`token/`, {
-        username: username,
-        password: password,
-      })
-      .then((res) => {
-        localStorage.setItem("access_token", res.data.access);
-        localStorage.setItem("refresh_token", res.data.refresh);
-        axiosInstance.defaults.headers["Authorization"] =
-          "JWT " + localStorage.getItem("access_token");
-        history.push("/input-form");
-        window.location.reload(false);
-      });
-  };
-  const handleRegister = (e) => {
-    e.preventDefault();
-    axiosInstance
-      .post(`register/`, {
-        'username': username1,
-        'password1': password1,
-        'password2': password2,
-      })
+  const handleShow = () => setShow(true);
 
-  };
-
-
- useEffect( ()=> {
-  axiosInstance.get("hypedevents/").then((r) => {
-    console.log(r);
-    setHyped(r.data);
-  })
-
-
- },[]);
-
- useEffect(() => {
-  axiosInstance.get("public_events/").then((r) => {
-    setEvents(r.data.map((e) => e.fields));
-    console.log(r.data.map((e) => e.fields));
-  }).catch((err) => console.log(err));
-}, []);
-
-
-
-  const handleRegViewChange = (e) =>{
-
-
-    setRegisterUser( !RegisterUser );
-  }
   useEffect(() => {
-    if (localStorage.getItem('access_token')) {
-      history.push("/events")
+    axiosInstance.get("hypedevents/").then((r) => {
+      console.log(r);
+      setHyped(r.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axiosInstance
+      .get("public_events/")
+      .then((r) => {
+        setEvents(r.data.map((e) => e.fields));
+        console.log(r.data.map((e) => e.fields));
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      history.push("/events");
     }
-  }, [])
+  }, []);
 
   return (
-
-
     <>
-    <Container fluid className="rounded bg-light p-5">
-    <Row><h1 class="lead-1">Project Chronos....</h1></Row>
+      <Container fluid className="rounded bg-light p-5">
+        <Row>
+          <h1 class="lead-1">Project Chronos....</h1>
+        </Row>
 
-    <Row>
-    <Col>
-      <h1>What?</h1>
-      <h3 class="lead">Situation being what it is, people are more isolated than they used to be. </h3>
-      <p class="lead">Aim of our project is to help people to manage their time better with studies. Also is there a better way to bring people together than thirst for knowledge. 
-      So if you see something you like, go ahead and click Continue!
-      </p>
-      <Button variant="primary" onClick={handleShow}>Continue</Button>
-      <Offcanvas show={show} onHide={handleClose} placement="top">
-        <Offcanvas.Header closeButton>
-
-          <Offcanvas.Title><h2>Login</h2></Offcanvas.Title>
-        
-        </Offcanvas.Header>
-        <Offcanvas.Body className="align-center">
-          <Container>
-            <Row>
-            
-            <Col>
-
-            <h3>Project Chronos</h3>
-            <h4 class="lead">No account? No worries. You can create one </h4>
-            <Button onClick={handleRegViewChange}>Create</Button>
-
-            </Col>
-            <Col>
-   
-        {!RegisterUser ?
-          <Form>
-            <p>
-              <label for="id_username_L">Username:</label>{" "}
-              <input
-                type="text"
-                autofocus=""
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                maxLength="150"
-                id="id_username_L"
-              />
+        <Row  style={{fontFamily: 'avenir'}}>
+          <Col>
+            <h1>What?</h1>
+            <h3 class="lead">
+              Situation being what it is, people are more isolated than they
+              used to be.{" "}
+            </h3>
+            <p class="lead">
+              Aim of our project is to help people to manage their time better
+              with studies. Also is there a better way to bring people together
+              than thirst for knowledge. So if you see something you like, go
+              ahead and click Continue!
             </p>
-            <p>
-              <label for="id_password_L">Password:</label>{" "}
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required=""
-                id="id_password_L"
-              />
-            </p>
-            <Button type="submit" onClick={handleLogin}>
-              Log In
+            <Button variant="primary" onClick={handleShow}>
+              Continue
             </Button>
-          </Form>
-
-
-            :
-
-        
-          <Form>
-            <p>
-              <label for="id_username">Username:</label>{" "}
-              <input
-                type="text"
-                autofocus=""
-                value={username1}
-                onChange={(e) => setUsername1(e.target.value)}
-                maxLength="150"
-                id="id_username"
-              />
-            </p>
-            <p>
-              <label for="id_password1">Password:</label>{" "}
-              <input
-                type="password"
-                value={password1}
-                onChange={(e) => setPassword1(e.target.value)}
-                required=""
-                id="id_password1"
-              />
-            </p>
-            <p>
-              <label for="id_password2">Verify Password</label>{" "}
-              <input
-                type="password"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-                required=""
-                id="id_password2"
-              />
-                          </p>
-            <Button type="submit" onClick={handleRegister}>
-              Register
-            </Button>
-          </Form>
-        }
-
+            <RegisterForm show={show} setShow={setShow} />
           </Col>
+          <Col>
+            <h2>Promoted events</h2>
+            <Carousel>
+              {hyped.map((hypedEvent) => (
+                <Carousel.Item>
+                  <Card>
+                    <Card.Body>
+                      <Card.Title>{hypedEvent.name.slice(0, 50)}</Card.Title>
+                      <Card.Text
+                      >
+                        <b>Description:</b>{" "}
+                        {hypedEvent.description.slice(0, 50)}
+                        <br />
+                        <b>Date and time:</b>
+                        {hypedEvent.starting_time}
+                        <br />
+                        <b>Location:</b> {hypedEvent.place}
+                      </Card.Text>
+                    </Card.Body>
+                    <Card.Footer
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                    >
+                      <small className="text-muted">
+                        {hypedEvent.attendees} attendees
+                      </small>
+                      <Button variant="primary">Join</Button>
+                    </Card.Footer>
+                  </Card>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </Col>
+        </Row>
+        <hr />
+        <Container>
+          <h2 class="text-center">Joinable events</h2>
+
+          <Row xs={2} md={3} className=" p-5 g-4">
+            {
+              <>
+                {events.map((val) => {
+                  return <EventCard info={val}></EventCard>;
+                })}
+              </>
+            }
           </Row>
         </Container>
-        </Offcanvas.Body>
-      </Offcanvas>
-    </Col>
-
-      <Col>
-      <h2>Promoted events</h2>
-      <Carousel>
-            
-            
-{
-hyped.map((hypedEvent) => (
-
-<Carousel.Item>
-              <Card>
-                <Card.Body>
-                  <Card.Title>{hypedEvent.name.slice(0,50)}</Card.Title>
-                  <Card.Text>
-                    <b>Description:</b> {hypedEvent.description.slice(0,50)}
-                    <br />
-                    <b>Date and time:</b>{hypedEvent.starting_time}
-                    <br />
-                    <b>Location:</b> {hypedEvent.place}
-                  </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                  <small className="text-muted">{hypedEvent.attendees} attendees</small>
-                  <Button variant="secondary">Join</Button>
-                </Card.Footer>
-              </Card>
-            </Carousel.Item>
-)
-)
-
-}
-
-
-            
-          </Carousel>
-
-      </Col>
-
-    </Row>
-<hr/>
-<Container>
-<h2 class="text-center">
-  Joinable events
-</h2>
-
-<Row xs={2} md={3} className=" p-5 g-4">
-  {
-  
-
-
-  <>
-          {events.map((val) => {
-            return <EventCard info={val}>
-          
-            </EventCard>
-          
-          })}
-  </>
-}
-
-</Row>
-
-</Container>
-
-   
-
-    </Container>    
-    
+      </Container>
     </>
   );
 };

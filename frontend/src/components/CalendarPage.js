@@ -47,14 +47,25 @@ const CalendarPage = () => {
       <Container>
         <Row>
           <h1 data-testid="calendar-title">Calendar</h1>
-          <Button onClick={() => setHiddenForm(!hiddenForm)}>{hiddenForm ? "Create new" : "Close form"}</Button>
+          <br/>
+          <br/>
+          <br/>
+          <div style= {{height: 100, alignItems: 'center', justifyContent: 'center'}}><Button style={{}} onClick={() => setHiddenForm(!hiddenForm)}>{hiddenForm ? "Create new event" : "Close form"}</Button></div>
           <div hidden={hiddenForm}>
-            <label>Name</label><input value={newName} onChange={(e) => setNewName(e.target.value)}/>
-            <label>StartDate</label><input type="date" value={newStartDate} onChange={(e) => setNewStartDate(e.target.value)}/>
-            <label>StartTime</label><input type="time" value={newStartTime} onChange={(e) => setNewStartTime(e.target.value)}/>
-            <label>Length (h)</label><input type="number" value={newLength} onChange={(e) => setNewLength(e.target.value)}/>
+            <b>Name </b><input value={newName} onChange={(e) => setNewName(e.target.value)}/>
+            <br/>
+            <b>StartDate </b><input type="date" value={newStartDate} onChange={(e) => setNewStartDate(e.target.value)}/>
+            <br/>
+            <b>StartTime </b><input type="time" value={newStartTime} onChange={(e) => setNewStartTime(e.target.value)}/>
+            <br/>
+            <b>Length (h) </b><input type="number" value={newLength} onChange={(e) => setNewLength(e.target.value)}/>
+            <br/>
+            <br/>
             <Button onClick={handleCreateNew}>Send</Button>
+            <br/>
+            <br/>
           </div>
+          
           <div className="calendar-container">
             <Calendar events={events} />
           </div>

@@ -37,8 +37,11 @@ import { Link } from "react-router-dom";
               variant="top"
               src={images[Math.floor(Math.random() * 3)]}
             />
-            <Card.Body>
-              <Card.Title>{props.info.name}</Card.Title>
+            <Card.Body
+            style={{
+              fontFamily: 'avenir',
+              fontSize: 15}} >
+              <Card.Title style={{fontSize: 17, paddingRight: 10}}>{props.info.name}</Card.Title>
               <Card.Text>
                 <b>Description:</b> <span style={{display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden"}}>{props.info.description}</span>
                 <br />
@@ -50,7 +53,7 @@ import { Link } from "react-router-dom";
                  <b> to  </b>
                <Moment format= " HH:mm">{props.info.end_time}</Moment>
                <br/>
-                <b>Location:</b> {props.info.place}
+                <b>Location: </b> {props.info.place}
                
                 
               </Card.Text>
@@ -63,9 +66,7 @@ import { Link } from "react-router-dom";
               }}
             >
               <small className="text-muted">
-                {props.info.attendees} attendees!
-               
-              </small>
+                {props.info.attendees} attendees! </small>
              
               <Link to={"/object/" + props.info.unique_id} className="btn btn-primary">Read more</Link>
             </Card.Footer>

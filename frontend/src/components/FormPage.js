@@ -48,21 +48,26 @@ const FormPage = () => {
   return (
     <>
       <Container>
-        <Row>
+        <Row style={{fontFamily: 'avenir'}}>
           <Col>
+          <br/>
             <h1 class="text-center">Calendar import </h1>
             <p class="">Import your ical file. ICal file can be found in bottom part of Mycourses 'calendar'-section.</p>
           </Col>
           <Col>
+          <br/>
+              
             <Form>
               <Form.Group as={Row}>
-                <Form.Label>Enter File</Form.Label>
+              
+                <Form.Label style={{fontFamily: 'avenir'}}>Enter File</Form.Label>
                 <Form.Control
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
                 ></Form.Control>
               </Form.Group>
-              <Button
+             
+              <Button 
                 as={Row}
                 variant="success"
                 type="submit"
@@ -75,10 +80,10 @@ const FormPage = () => {
           </Col>
         </Row>
         <br />
-        <h2 hidden={!noNewEvents}>There were no new deadlines in this file! Check a new file or go to calendar</h2>
+        <h2 style={{fontFamily: 'avenir'}} hidden={!noNewEvents}>There were no new deadlines in this file! Check a new file or go to calendar</h2>
         <div hidden={newDeadlines.length === 0}>
           <h2 class="text-center pt-5">Found events</h2>
-          <p class="text-center lead pb-5">Found events via parsing the Ical. Now you have an option to allocate how many hours you might need for completion of each deadline.</p>
+          <p style={{fontFamily: 'avenir'}} class="text-center lead pb-5">Found events via parsing the Ical. Now you have an option to allocate how many hours you might need for completion of each deadline.</p>
           {newDeadlines.map((dl, i) => (
             <div key={i} className={i%2==0 ? 'bg-light': 'bg-white'}>
               <h3>{dl.summary}</h3>
@@ -88,7 +93,7 @@ const FormPage = () => {
                 {new Date(dl.time).toGMTString()}
               </p>
               <div class="input-group">
-                <b>Time allocation:</b>{" "}
+                <b style={{fontFamily: 'avenir'}}>Time allocation:</b>{" "}
                 <input
                 type="number"
                   class="form-control"
@@ -101,7 +106,7 @@ const FormPage = () => {
               <hr />
             </div>
           ))}
-          <Button onClick={handleSubmitDeadlines}> Allocate and submit </Button>
+          <Button style={{fontFamily: 'avenir'}} onClick={handleSubmitDeadlines}> Allocate and submit </Button>
         </div>
       </Container>
     </>
